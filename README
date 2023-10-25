@@ -1,4 +1,2 @@
-a simple compile and link should work.
-
-ifort helmholtz.f90 -o helmholtz.exe
-
+Generate python module using "make"
+Load the module in python scripts and use the subroutines inside.
