@@ -1,5 +1,7 @@
+      module funcs
+      contains
 ! modified gamma + radiation pressure 
-      subroutine modgamma(temp, dens, abar, zbar, pres, eint,entr)
+      subroutine modgamma(temp, dens, abar, zbar, pres, eint, entr)
           include 'const.dek'
           
           double precision, intent(in) :: temp, dens, abar, zbar
@@ -8,7 +10,9 @@
                               entr_ideal, entr_rad
           double precision, parameter :: eos_gas = avo * kerg
           double precision :: x, s, z
-
+          double precision, parameter :: a1 = 0.898004, b1 = 0.96786, c1 = 0.220703, d1 = -0.86097
+          double precision, Parameter :: a2 = -0.86602540378, b2 = 0.29561, c2 = 1.9885
+          double precision :: ytot, zbar53, ecoul, e2, gam, gam14, bkt, bok, ae, gam32, gamc2
           pres_ideal = eos_gas * dens * temp / abar 
           pres_rad = (1.0d0/3.0d0) * asol *&
                       temp * temp * temp * temp 
@@ -21,9 +25,27 @@
           entr_ideal = (eint_ideal + pres_ideal/dens) / temp + & 
                      (1/abar) * eos_gas * log(z)
           entr_rad = (eint_rad + pres_rad/dens) / temp
+            
+          ae = (3.0 / (4.0*pi*avo*dens*(zbar/abar)))**(1.0d0/3.0d0) ! electron-sphere radius
+          !z53bar = sum(zz53 * y) / ytot
+          ytot = 1/abar
+          bok = 8.6173303e-02
+          bkt = bok * temp/1.0d9
+          z53bar = 1.0d0
+          e2 = 1.439964533d-13
+          gam = z53bar*e2 / (ae*bkt) ! ionic Coulomb coupling parameter
+          If ( gam >= 1.0 ) Then
+            gam14 = gam**0.25
+            ecoul = (a1*gam + b1*gam14 + c1/gam14 + d1) * bkt * ytot
+          Else
+            gam32 = gam*sqrt(gam)
+            gamc2 = gam**c2
+            ecoul = (a2*gam32 + b2*gamc2) * bkt * ytot
+          EndIf
 
-          pres = pres_ideal + pres_rad
-          eint = eint_ideal + eint_rad
+          pres = pres_ideal + pres_rad  
+          !+ eos_gas * dens * temp * zbar/(amu * abar) 
+          eint = eint_ideal + eint_rad !+ ecoul 
           entr = entr_ideal + entr_rad
 
 07    format(1x,t2,a7,1p7e16.8) !sneo
@@ -1468,3 +1490,4 @@
 
       return
       end
+      end module
