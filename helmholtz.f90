@@ -1,4 +1,4 @@
-      module funcs
+      module helm
       contains
 ! modified gamma + radiation pressure 
       subroutine modgamma(temp, dens, abar, zbar, pres, eint, entr)
@@ -10,9 +10,10 @@
                               entr_ideal, entr_rad
           double precision, parameter :: eos_gas = avo * kerg
           double precision :: x, s, z
-          double precision, parameter :: a1 = 0.898004, b1 = 0.96786, c1 = 0.220703, d1 = -0.86097
-          double precision, Parameter :: a2 = -0.86602540378, b2 = 0.29561, c2 = 1.9885
-          double precision :: ytot, zbar53, ecoul, e2, gam, gam14, bkt, bok, ae, gam32, gamc2
+          !double precision, parameter :: a1 = 0.898004, b1 = 0.96786, c1 = 0.220703, d1 = -0.86097
+          !double precision, Parameter :: a2 = -0.86602540378, b2 = 0.29561, c2 = 1.9885
+          !double precision :: ytot, zbar53, ecoul, e2, gam, gam14, bkt, bok, ae, gam32, gamc2
+          
           pres_ideal = eos_gas * dens * temp / abar 
           pres_rad = (1.0d0/3.0d0) * asol *&
                       temp * temp * temp * temp 
@@ -26,25 +27,24 @@
                      (1/abar) * eos_gas * log(z)
           entr_rad = (eint_rad + pres_rad/dens) / temp
             
-          ae = (3.0 / (4.0*pi*avo*dens*(zbar/abar)))**(1.0d0/3.0d0) ! electron-sphere radius
-          !z53bar = sum(zz53 * y) / ytot
-          ytot = 1/abar
-          bok = 8.6173303e-02
-          bkt = bok * temp/1.0d9
-          z53bar = 1.0d0
-          e2 = 1.439964533d-13
-          gam = z53bar*e2 / (ae*bkt) ! ionic Coulomb coupling parameter
-          If ( gam >= 1.0 ) Then
-            gam14 = gam**0.25
-            ecoul = (a1*gam + b1*gam14 + c1/gam14 + d1) * bkt * ytot
-          Else
-            gam32 = gam*sqrt(gam)
-            gamc2 = gam**c2
-            ecoul = (a2*gam32 + b2*gamc2) * bkt * ytot
-          EndIf
+          !ae = (3.0 / (4.0*pi*avo*dens*(zbar/abar)))**(1.0d0/3.0d0) ! electron-sphere radius
+          !!z53bar = sum(zz53 * y) / ytot
+          !ytot = 1/abar
+          !bok = 8.6173303e-02
+          !bkt = bok * temp/1.0d9
+          !z53bar = 1.0d0
+          !e2 = 1.439964533d-13
+          !gam = z53bar*e2 / (ae*bkt) ! ionic Coulomb coupling parameter
+          !If ( gam >= 1.0 ) Then
+          !  gam14 = gam**0.25
+          !  ecoul = (a1*gam + b1*gam14 + c1/gam14 + d1) * bkt * ytot
+          !Else
+          !  gam32 = gam*sqrt(gam)
+          !  gamc2 = gam**c2
+          !  ecoul = (a2*gam32 + b2*gamc2) * bkt * ytot
+          !EndIf
 
           pres = pres_ideal + pres_rad  
-          !+ eos_gas * dens * temp * zbar/(amu * abar) 
           eint = eint_ideal + eint_rad !+ ecoul 
           entr = entr_ideal + entr_rad
 
@@ -571,30 +571,30 @@
 
 ! bomb proof the input
         if (temp .gt. t(jmax)) then
-         write(6,01) 'temp=',temp,' t(jmax)=',t(jmax)
-         write(6,*) 'temp too hot, off grid'
-         write(6,*) 'setting eosfail to true and returning'
+         !write(6,01) 'temp=',temp,' t(jmax)=',t(jmax)
+         !write(6,*) 'temp too hot, off grid'
+         !write(6,*) 'setting eosfail to true and returning'
          eosfail = .true.
          return
         end if
         if (temp .lt. t(1)) then
-         write(6,01) 'temp=',temp,' t(1)=',t(1)
-         write(6,*) 'temp too cold, off grid'
-         write(6,*) 'setting eosfail to true and returning'
+         !write(6,01) 'temp=',temp,' t(1)=',t(1)
+         !write(6,*) 'temp too cold, off grid'
+         !write(6,*) 'setting eosfail to true and returning'
          eosfail = .true.
          return
         end if
         if (din  .gt. d(imax)) then
-         write(6,01) 'den*ye=',din,' d(imax)=',d(imax)
-         write(6,*) 'ye*den too big, off grid'
-         write(6,*) 'setting eosfail to true and returning'
+         !write(6,01) 'den*ye=',din,' d(imax)=',d(imax)
+         !write(6,*) 'ye*den too big, off grid'
+         !write(6,*) 'setting eosfail to true and returning'
          eosfail = .true.
          return
         end if
         if (din  .lt. d(1)) then
-         write(6,01) 'ye*den=',din,' d(1)=',d(1)
-         write(6,*) 'ye*den too small, off grid'
-         write(6,*) 'setting eosfail to true and returning'
+         !write(6,01) 'ye*den=',din,' d(1)=',d(1)
+         !write(6,*) 'ye*den too small, off grid'
+         !write(6,*) 'setting eosfail to true and returning'
          eosfail = .true.
          return
         end if
