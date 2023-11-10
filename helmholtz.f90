@@ -65,7 +65,7 @@
 ! routine helmeos computes the pressure, energy and entropy via tables
 
 
-      subroutine read_helm_table
+      subroutine read_helm_table(fname)
       include 'implno.dek'
       include 'helm_table_storage.dek'
 
@@ -76,11 +76,11 @@
       integer          i,j
       double precision tsav,dsav,dth,dt2,dti,dt2i,dt3i, &
                        dd,dd2,ddi,dd2i,dd3i
-
+      character*30, intent(in) :: fname
 
 ! open the file (use softlinks to input the desired table)
 
-       open(unit=19,file='helm_table.dat',status='old')
+       open(unit=19,file=fname,status='old')
 
 
 ! for standard table limits
@@ -110,7 +110,7 @@
 ! read the pressure derivative with density table
        do j=1,jmax
         do i=1,imax
-         read(19,*) dpdf(i,j),dpdfd(i,j),dpdft(i,j),dpdfdt(i,j)
+         !read(19,*) dpdf(i,j),dpdfd(i,j),dpdft(i,j),dpdfdt(i,j)
         enddo
        enddo
 !       write(6,*) 'read dpdd table'
@@ -118,7 +118,7 @@
 ! read the electron chemical potential table
        do j=1,jmax
         do i=1,imax
-         read(19,*) ef(i,j),efd(i,j),eft(i,j),efdt(i,j)
+         !read(19,*) ef(i,j),efd(i,j),eft(i,j),efdt(i,j)
         enddo
        enddo
 !       write(6,*) 'read eta table'
@@ -126,7 +126,7 @@
 ! read the number density table
        do j=1,jmax
         do i=1,imax
-         read(19,*) xf(i,j),xfd(i,j),xft(i,j),xfdt(i,j)
+         !read(19,*) xf(i,j),xfd(i,j),xft(i,j),xfdt(i,j)
         enddo
        enddo
 !       write(6,*) 'read xne table'
