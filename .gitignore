@@ -1,4 +1,6 @@
 chk_files/
 eos_compare.py
+eos_table_compare.py
 myflib.*.so
 ._*
+*.png
