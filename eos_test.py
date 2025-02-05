@@ -10,7 +10,7 @@ zbar = 1.0813594232749741
 #pres, eint, entr
 
 #read the helm table for helmholtz eos
-myflib.helm.read_helm_table()
+myflib.helm.read_helm_table("helm_table.dat")
 
 print(myflib.helm.helmeos(temp, dens, abar, zbar))
 print(myflib.timm.eosfxt(temp, dens, abar, zbar))
